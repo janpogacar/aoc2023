@@ -17,7 +17,7 @@ for i, dist in enumerate(dist_list):
     limits = np.roots(coeffs)
     limits = np.sort(limits)
 
-    num_of_results *= ((limits[1] - 1) if limits[1].is_integer() else np.floor(limits[1])) - ((limits[0]+1) if limits[0].is_integer() else np.ceil(limits[0])) +1
+    num_of_results *= (np.ceil(limits[1])-1) - (np.floor(limits[0])+1) +1
 
 
 print(int(num_of_results))
@@ -36,6 +36,6 @@ coeffs = [-1, time2, -1*dist2]
 limits = np.roots(coeffs)
 limits = np.sort(limits)
 
-num_of_results = ((limits[1] - 1) if limits[1].is_integer() else np.floor(limits[1])) - ((limits[0]+1) if limits[0].is_integer() else np.ceil(limits[0])) +1
+num_of_results = (np.ceil(limits[1])-1) - (np.floor(limits[0])+1) +1
 
 print(int(num_of_results))
