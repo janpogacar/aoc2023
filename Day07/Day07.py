@@ -1,5 +1,5 @@
 import re
-import numpy as np
+import functools
 
 def getScore(cards):
     s = set(cards)
@@ -79,58 +79,27 @@ def checkHighCard2(card1, card2):
                 return False
     return False
 
-
-def bubbleSort(arr):
-    n = len(arr)
-    # optimize code, so if the array is already sorted, it doesn't need
-    # to go through the entire process
-    swapped = False
-    # Traverse through all array elements
-    for i in range(n-1):
-        # range(n) also work but outer loop will
-        # repeat one time more than needed.
-        # Last i elements are already in place
-        for j in range(0, n-i-1):
- 
-            # traverse the array from 0 to n-i-1
-            # Swap if the element found is greater
-            # than the next element
-            if (getScore(arr[j][0]) > getScore(arr[j+1][0])
-                or ((getScore(arr[j][0]) == getScore(arr[j+1][0])
-                     and checkHighCard(arr[j][0], arr[j+1][0])))):
-                swapped = True
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-         
-        if not swapped:
-            # if we haven't needed to make a single swap, we 
-            # can just exit the main loop.
-            return
-    
-def bubbleSort2(arr):
-    n = len(arr)
-    # optimize code, so if the array is already sorted, it doesn't need
-    # to go through the entire process
-    swapped = False
-    # Traverse through all array elements
-    for i in range(n-1):
-        # range(n) also work but outer loop will
-        # repeat one time more than needed.
-        # Last i elements are already in place
-        for j in range(0, n-i-1):
- 
-            # traverse the array from 0 to n-i-1
-            # Swap if the element found is greater
-            # than the next element
-            if (getScore2(arr[j][0]) > getScore2(arr[j+1][0])
-                or ((getScore2(arr[j][0]) == getScore2(arr[j+1][0])
-                     and checkHighCard2(arr[j][0], arr[j+1][0])))):
-                swapped = True
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-         
-        if not swapped:
-            # if we haven't needed to make a single swap, we 
-            # can just exit the main loop.
-            return
+def compare(card1, card2):
+    if getScore(card1[0]) < getScore(card2[0]):
+        return -1
+    elif getScore(card1[0]) > getScore(card2[0]):
+        return 1
+    else:
+        if checkHighCard(card1[0], card2[0]) is False:
+            return -1
+        else:
+            return 1
+        
+def compare2(card1, card2):
+    if getScore2(card1[0]) < getScore2(card2[0]):
+        return -1
+    elif getScore2(card1[0]) > getScore2(card2[0]):
+        return 1
+    else:
+        if checkHighCard2(card1[0], card2[0]) is False:
+            return -1
+        else:
+            return 1
 
 with open('input.txt') as f:
     lines = f.readlines()
@@ -139,7 +108,7 @@ hands = []
 for x in lines:
     hands.append(x.split(" "))
 
-bubbleSort(hands)
+hands.sort(key=functools.cmp_to_key(compare))
 
 score = 0
 for i in range(len(hands)):
@@ -147,7 +116,7 @@ for i in range(len(hands)):
 
 print(score)
 
-bubbleSort2(hands)
+hands.sort(key=functools.cmp_to_key(compare2))
 
 score = 0
 for i in range(len(hands)):
