@@ -1,27 +1,5 @@
 from copy import deepcopy
 
-queue = []     #Initialize a queue
-def maze_bfs(pos_y, pos_x): #function for BFS
-  queue.append([pos_y, pos_x])
-
-  while queue:          # Creating loop to visit each node
-    y, x = queue.pop(0)
-    if x == 75 and y == 75:
-        print(0) 
-    #print (m, end = " ") 
-    if (x+1) in range(0, len(maze2[0])) and maze2[y][x+1] != "*":
-       maze2[y][x+1] = "*"
-       queue.append([y, x+1])
-    if (x-1) in range(0, len(maze2[0])) and maze2[y][x-1] != "*":
-       maze2[y][x-1] = "*"
-       queue.append([y, x-1])
-    if (y+1) in range(0, len(maze2)) and maze2[y+1][x] != "*":
-       maze2[y+1][x] = "*"
-       queue.append([y+1, x])
-    if (y-1) in range(0, len(maze2)) and maze2[y-1][x] != "*":
-       maze2[y-1][x] = "*"
-       queue.append([y-1, x])
-
 with open('input.txt') as f:
     lines = f.readlines()
 
@@ -43,7 +21,9 @@ dir = "l" # Left Right Up Down
 
 
 dist = 1
-maze2[pos_y][pos_x] = "*"
+pipe_list = []
+#maze2[pos_y][pos_x] = "*"
+pipe_list.append([pos_y, pos_x])
 
 while(True):
     if maze[pos_y][pos_x] == "S":
@@ -85,45 +65,24 @@ while(True):
             pos_x += 1
             dir = "r"
     dist += 1
-    maze2[pos_y][pos_x] = "*"
-
-f = open('debug.txt', 'w')
-for i in maze2:
-    tmp = ""
-    for j in i:
-        tmp += j
-    f.write(tmp + '\n')
+    #maze2[pos_y][pos_x] = "*"
+    pipe_list.append([pos_y, pos_x])
 
 for i in range(len(maze2)):
     for j in range(len(maze2[0])):
-        if maze2[i][j] != "*":
+        if [i,j] not in pipe_list:
           maze2[i][j] = "." 
 
-f = open('debug2.txt', 'w')
-for i in maze2:
-    tmp = ""
-    for j in i:
-        tmp += j
-    f.write(tmp + '\n')
+result2 = 0
 
-# run bfs for all edges
-for x in range(0, len(maze2[0])):
-    maze_bfs(0, x)
-    maze_bfs(len(maze2)-1, x)
+for line in maze2:
+    inside = False
+    for x in line:
+        if inside and x == ".":
+            result2 += 1
+        if x in ["|", "J", "L", "S"]: # S is J in my case, so this is hardcoded
+            inside = not inside
 
-for y in range(0, len(maze2)):
-    maze_bfs(y, 0)
-    maze_bfs(y, len(maze2[0])-1)
-
-
+            
 print(dist/2)
-print(sum(x.count(".") for x in maze2))
-
-f = open('readme.txt', 'w')
-for k in maze2:
-    tmp = ""
-    for j in k:
-        tmp += j
-    f.write(tmp + '\n')
-
-f.close()
+print(result2)
